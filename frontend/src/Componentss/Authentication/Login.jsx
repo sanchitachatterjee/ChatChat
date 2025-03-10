@@ -9,7 +9,7 @@ import { useNavigate } from "react-router-dom";
 
 const Login = () => {
   const [email, setEmail] = useState("");
-  const [password, setPassword] = useState(""); // 🔥 Fixed 'pw' → 'password'
+  const [password, setPassword] = useState("");
   const [load, setLoad] = useState(false);
 
   const toast = useToast();
@@ -44,7 +44,7 @@ const Login = () => {
         config
       );
   
-      console.log("Login Response:", data); // 🔥 Debug response
+      console.log("Login Response:", data); 
   
       toast({
         title: "Login is successful",
@@ -59,7 +59,7 @@ const Login = () => {
       navigate("/chat");
   
     } catch (err) {
-      console.error("API Error:", err.response?.data?.message || err.message); // 🔥 Debug error
+      console.error("API Error:", err.response?.data?.message || err.message); 
   
       toast({
         title: "Error Occurred",
@@ -119,7 +119,7 @@ const Login = () => {
         width={"100%"}
         onClick={() => {
           setEmail("guestAexample.com");
-          setPassword("abcdef"); // 🔥 Fixed 'setPw' → 'setPassword'
+          setPassword("abcdef");
         }}
       >
         Get Guest User Credential
