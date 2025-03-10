@@ -23,25 +23,6 @@ app.use('/api/message',messageRoutes)
 app.use(notFound)
 app.use(errorHandler)
 
-// Depolyment Code
-
-const __dirname1= path.resolve();
-if(process.env.NODE_ENV==='development'){
- app.use(express.static(path.join(__dirname1,"frontend", "dist")))
- app.get('*',(res,req)=>{
-  res.sendFile(path.resolve(__dirname1,"frontend","dist","index.html"))
- })
-
-}
-
-else{
-  app.get('/',(req,res)=>{
-    res.send("Api is running successfully")
-  })
-}
-
-//Deployment code
-
 
 const PORT = process.env.PORT || 8000;
 const server= app.listen(PORT, console.log(`Server started on PORT ${PORT}`))
