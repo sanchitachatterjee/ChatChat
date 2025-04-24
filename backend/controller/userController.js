@@ -21,7 +21,7 @@ const registerUser = asyncHandler(async (req, res) => {
   const newUser = await User.create({
     name,
     email,
-    password,  // 🔥 Fixed 'pw' → 'password'
+    password, 
     pic,
   });
 
@@ -41,7 +41,7 @@ const registerUser = asyncHandler(async (req, res) => {
 
 const authUser = asyncHandler(async (req, res) => {
   try {
-    console.log("Login Request Received:", req.body);
+    // console.log("Login Request Received:", req.body);
 
     const { email, password } = req.body;
     if (!email || !password) {

@@ -10,7 +10,7 @@ const ChatMessages = ({ messages }) => {
 
   if (!user || !user._id) return null;
 
-  // ✅ Alternative scroll fix (less layout shift)
+
   useEffect(() => {
     if (messagesEndRef.current) {
       messagesEndRef.current.scrollTop = messagesEndRef.current.scrollHeight;
@@ -39,7 +39,7 @@ const ChatMessages = ({ messages }) => {
               marginBottom: "5px",
             }}
           >
-            {/* ✅ Show DP only for receiver */}
+    
             {!isUserMessage && (
               <Tooltip label={m.sender.name} placement="bottom-start" hasArrow>
                 <Avatar mt="7px" mr={1} size="sm" cursor="pointer" name={m.sender.name} src={m.sender.pic} />
