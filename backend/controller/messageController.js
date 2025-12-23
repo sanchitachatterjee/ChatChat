@@ -2,7 +2,7 @@ const asyncHandler = require("express-async-handler");
 const Message = require("../Modules/messageModel");
 const User = require("../Modules/userModel");
 const Chat = require("../Modules/chatModel");
-
+const {tonegeneratedmsg} = require('../services/llmservice')
 const sendMessage = asyncHandler(async (req, res) => {
   const { content, chatId } = req.body;
 
@@ -52,4 +52,23 @@ const allMessages = asyncHandler(async (req, res) => {
   }
 });
 
-module.exports = { sendMessage, allMessages };
+const rewritemsg= asyncHandler(async(req,res)=>{
+  try{
+   const { content, tone } = req.body;
+    if (!content || !tone) {
+      return res.status(400).json({
+        error: "Message and tone are required",
+      });
+    }
+    const rewrittenText = await tonegeneratedmsg(content, tone);
+    res.status(200).json({
+      rewrittenText,
+    });
+  } catch (error) {
+    console.error( error.message);
+    res.status(500).json({
+      error: "Failed to generate message",
+    });
+  }
+})
+module.exports = { sendMessage, allMessages, rewritemsg };

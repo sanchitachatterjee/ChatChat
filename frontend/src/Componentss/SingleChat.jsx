@@ -1,10 +1,11 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { chatState } from '../Context/ChatProvider';
-import { Box, FormControl, IconButton, Input, Spinner, Text, useToast } from '@chakra-ui/react';
+import { Box, FormControl, IconButton, Input, Spinner, Text, useToast,HStack } from '@chakra-ui/react';
 import { ArrowBackIcon } from '@chakra-ui/icons';
 import { getSender, getSenderFull } from '../Config/ChatLogic';
 import ProfileModal from './Boxes/ProfileModal';
 import UpdateGroupChatModal from './Boxes/UpdateGroupChatModal';
+import ChatTone from './Boxes/ChatTone';
 import axios from 'axios';
 import ChatMessages from './ChatMessages';
 import io from 'socket.io-client';
@@ -20,7 +21,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     const { user, selectedChat, setSelectedChat, notification, setNotification } = chatState();
     const [typing, setTyping] = useState(false);
     const [isTyping, setIsTyping] = useState(false);
-    
+
     const toast = useToast();
     const selectedChatRef = useRef(selectedChat);
     const lastMessageRef = useRef(null);
@@ -80,7 +81,7 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
 
             setLoad(true);
             const { data } = await axios.get(`${EndPoint}/api/message/${selectedChat._id}`, config);
-            
+
             setMessages(data);
             setLoad(false);
 
@@ -127,21 +128,21 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
     }, [messages]);
 
     const typingHandler = (e) => {
-      setNewMessage(e.target.value);
-      if (!socketConnected) return;
+        setNewMessage(e.target.value);
+        if (!socketConnected) return;
 
-      if (!typing) {
-          setTyping(true);
-          socket.emit("Typing", selectedChat._id);
-      }
+        if (!typing) {
+            setTyping(true);
+            socket.emit("Typing", selectedChat._id);
+        }
 
-      // Clear the previous timeout
-      if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
+        // Clear the previous timeout
+        if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
 
-      typingTimeoutRef.current = setTimeout(() => {
-          socket.emit("Stop Typing", selectedChat._id);
-          setTyping(false);
-      }, 2000);
+        typingTimeoutRef.current = setTimeout(() => {
+            socket.emit("Stop Typing", selectedChat._id);
+            setTyping(false);
+        }, 2000);
     };
 
     return (
@@ -163,16 +164,16 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                             onClick={() => setSelectedChat("")}
                         />
                         {!selectedChat.isGroupChat ? (
-                            <> 
+                            <>
                                 {getSender(user, selectedChat.users)}
                                 <ProfileModal user={getSenderFull(user, selectedChat.users)} />
                             </>
                         ) : (
-                            <>  
+                            <>
                                 {selectedChat.chatName.toUpperCase()}
                                 <UpdateGroupChatModal
                                     fetchAgain={fetchAgain} setFetchAgain={setFetchAgain} fetchMessages={fetchMessages}
-                                /> 
+                                />
                             </>
                         )}
                     </Text>
@@ -194,20 +195,35 @@ const SingleChat = ({ fetchAgain, setFetchAgain }) => {
                             <div style={{ display: 'flex', flexDirection: "column", overflowY: "scroll", scrollbarWidth: "none" }}>
                                 <ChatMessages messages={messages} />
                                 {isTyping && (
-                                 <Text fontSize="sm" color="gray.500">
-                                   Typing...
-                                 </Text>)} 
+                                    <Text fontSize="sm" color="gray.500">
+                                        Typing...
+                                    </Text>)}
                             </div>
                         )}
 
-                        <FormControl mt={3} onKeyDown={sendMessage} isRequired>
-                            <Input
-                                bg={"#e0e0e0"}
-                                placeholder='Type message...'
-                                onChange={typingHandler}
-                                value={newMessage}
-                            />
-                        </FormControl>
+                        <HStack mt={3} spacing={2}>
+
+                            {/* Input bar */}
+                            <FormControl onKeyDown={sendMessage} isRequired flex="1">
+                                <Input
+                                    bg={"#e0e0e0"}
+                                    placeholder='Type message...'
+                                    onChange={typingHandler}
+                                    value={newMessage}
+                                />
+                            </FormControl>
+
+                            {/* Tone Changer Button */}
+                            {newMessage.trim().length > 0 && (
+                                <ChatTone
+                                    originalText={newMessage}
+                                    onApply={(generateText) => {
+                                        setNewMessage(generateText); 
+                                    }}
+                                />
+                            )}
+
+                        </HStack>
                     </Box>
                 </>
             ) : (

@@ -1,7 +1,6 @@
 const asyncHandler = require("express-async-handler");
 const Chat = require("../Modules/chatModel");
 const User = require("../Modules/userModel");
-
 const accessChat = asyncHandler(async (req, res) => {
   const { userId } = req.body;
 
@@ -75,8 +74,8 @@ const createGroupChat = asyncHandler(async (req, res) => {
   }
 
   let users = JSON.parse(req.body.users);
-  if (users.length < 2) {
-    return res.status(400).send("At least two users required to form a group");
+  if (users.length < 3) {
+    return res.status(400).send("At least three users required to form a group");
   }
 
   users.push(req.user);
